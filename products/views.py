@@ -55,10 +55,18 @@ class CategoryListView(View, PayloaderMixin, RecursiveCategoryMixin):
 
 
 class ProductListView(View, PayloaderMixin, RecursiveCategoryMixin):
-    def get(self, request, category_slug):
+    def get(self, request, category_slug=None):
         self.payloads['results'] = []
-        category = get_object_or_404(Category, slug=category_slug)
-        products = Product.objects.filter(category__in=[category], company__is_active=True)
+        q = request.GET.get('q', None)
+
+        if category_slug:
+            category = get_object_or_404(Category, slug=category_slug)
+            products = Product.objects.filter(category__in=[category], company__is_active=True)
+        else:
+            products = Product.objects.filter(company__is_active=True)
+
+        if q:
+            products = products.filter(name__icontains=q)
 
         for product in products:
             moq = product.minimumorderquantity_set.first()
