@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from products.models import Category, Product, MinimumOrderQuantity, Unit
+
+admin.site.register(Category)
+admin.site.register(Product)
+admin.site.register(Unit)
+admin.site.register(MinimumOrderQuantity)
